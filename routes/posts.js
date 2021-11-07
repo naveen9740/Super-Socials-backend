@@ -23,7 +23,7 @@ router.put("/:id", async (req, res) => {
       await post.updateOne({ $set: req.body });
       res.json({ msg: "Post updated" });
     } else {
-      res.status(403).json("you can update only your post");
+      res.status(403).json({ msg: "you can update only your post" });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -46,7 +46,32 @@ router.delete("/:id", async (req, res) => {
   }
 });
 // like a post
+router.put("/:id/like", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+    const post = await Post.findById(id);
+    if (!post.likes.includes(userId)) {
+      await post.updateOne({ $push: { likes: userId } });
+      res.json({ msg: "post has been liked" });
+    } else {
+      await post.updateOne({ $pull: { likes: userId } });
+      res.json({ msg: "post has been disliked" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 // get a post
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 // get timeline posts
 
 module.exports = router;
