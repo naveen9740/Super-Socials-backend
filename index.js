@@ -13,10 +13,13 @@ const port = 3000;
 dotenv.config();
 
 mongoose
-  .connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://dbUser:OK5ILx6Om16Xx7MP@cluster0.65plf.mongodb.net/socials?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
