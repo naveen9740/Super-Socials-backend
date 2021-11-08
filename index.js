@@ -33,7 +33,8 @@ app.get("/", (req, res) => {
   res.json({ msg: "Home Page" });
 });
 
-app.listen(process.env.PORT || port, () => {
+app.listen(process.env.PORT, () => {
+  console.log(process.env.PORT);
   console.log("Server Started yayy!!");
 });
 // 25
