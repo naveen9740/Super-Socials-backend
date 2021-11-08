@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
+const port = 3000;
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ app.get("/", (req, res) => {
   res.json({ msg: "Home Page" });
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || port, () => {
   console.log("Server Started yayy!!");
 });
 // 25
