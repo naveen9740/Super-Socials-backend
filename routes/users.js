@@ -4,9 +4,11 @@ const User = require("../models/userModel");
 const router = express.Router();
 
 // get a user
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
+router.get("/", async (req, res) => {
+  const { userId, username } = req.query;
+  const user = userId
+    ? await User.findById(userId)
+    : await User.findOne({ username: username });
   const { password, ...other } = user._doc;
   res.json({ other });
   try {
@@ -17,7 +19,7 @@ router.get("/:id", async (req, res) => {
 // update user
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  let { userId, isAdmin, password } = req.body;
+  let { userId, isAdmin, password, email } = req.body;
   if (userId === id || isAdmin) {
     if (password) {
       try {
@@ -71,7 +73,7 @@ router.put("/:id/follow", async (req, res) => {
         res.status(403).json({ msg: "You already follow this user" });
       }
     } catch (error) {
-      res.status(500).json({ err: err.message });
+      res.status(500).json({ error: error.message });
     }
   } else {
     res.status(403).json("you cant follow yourself");
@@ -93,10 +95,31 @@ router.put("/:id/unfollow", async (req, res) => {
         res.status(403).json({ msg: "You already unfollow this user" });
       }
     } catch (error) {
-      res.status(500).json({ err: err.message });
+      res.status(500).json(error.message);
     }
   } else {
     res.status(403).json("you cant unfollow yourself");
+  }
+});
+
+// fetch friends
+router.get("/friends/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    const friends = await Promise.all(
+      user.following.map((friendId) => {
+        return User.findById(friendId);
+      })
+    );
+    const friendList = [];
+    friends.map((friend) => {
+      const { _id, username, profilePicture } = friend;
+      friendList.push({ _id, username, profilePicture });
+    });
+    res.json(friendList);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
