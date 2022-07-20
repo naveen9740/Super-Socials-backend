@@ -16,7 +16,7 @@ dotenv.config();
 
 mongoose
   .connect(
-    "mongodb+srv://dbUser:OK5ILx6Om16Xx7MP@cluster0.65plf.mongodb.net/socials?retryWrites=true&w=majority",
+    "mongodb+srv://naveenkamath:naveenkamath@cluster0.a38cd.mongodb.net/myFirstDatabase?",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
