@@ -29,7 +29,7 @@ router.route("/login").post(async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.find({ email:email });
-    (user.length==0) && res.status(404).json({ msg: "user not found" });
+    user.length==0 && res.status(404).json({ msg: "user not found" });
     
     console.log("ASDF",user,password);
 
