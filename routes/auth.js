@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 // Register
 router.route("/register").post(async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, profilePicture } = req.body;
     // generate new Password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hashSync(password, salt);
@@ -15,6 +15,7 @@ router.route("/register").post(async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      profilePicture,
     });
     // Save user and return response
     const user = await newUser.save();
@@ -27,14 +28,16 @@ router.route("/register").post(async (req, res) => {
 // Login
 router.route("/login").post(async (req, res) => {
   try {
+    const user = await User.findOne({ email: req.body.email });
 
-    const user = await User.findOne({ email:req.body.email });
-    
-    if( user.length==0){
+    if (user.length == 0) {
       return res.status(404).json({ msg: "user not found" });
     }
 
-    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
     !validPassword && res.status(400).json({ msg: "wrong password" });
 
     res.json({ user });

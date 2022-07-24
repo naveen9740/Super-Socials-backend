@@ -16,6 +16,17 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// get all users
+router.get("/users", async (req, res) => {
+  const users = await User.find();
+  res.json({ users });
+  try {
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // update user
 router.put("/:id", async (req, res) => {
   const { id } = req.params;

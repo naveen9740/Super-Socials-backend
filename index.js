@@ -15,13 +15,10 @@ const port = 3000;
 dotenv.config();
 
 mongoose
-  .connect(
-    "mongodb+srv://naveenkamath:naveenkamath@cluster0.a38cd.mongodb.net/myFirstDatabase?",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.MONGODB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
@@ -36,20 +33,24 @@ app.use("/users", userRoute);
 app.use("/auth", authRoute);
 app.use("/posts", postRoute);
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "../super-socials-frontend/public/assets/post");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-const upload = multer({ storage });
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     console.log("11111", req, file);
+//     cb(null, "../super-socials-frontend/public/assets/post");
+//   },
+//   filename: (req, file, cb) => {
+//     console.log(file, "222222");
+//     cb(null, file.originalname);
+//   },
+// });
+// const upload = multer({ storage });
+const upload = multer({ dest: "uploads/" });
 
 app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     return res.json("File uploaded Successfully");
   } catch (error) {
+    console.log("EEEEE");
     console.log(error.message);
   }
 });
